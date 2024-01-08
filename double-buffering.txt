@@ -1,0 +1,53 @@
+private Image bufferImage;
+private Graphics2D bufferGraphics;
+
+protected void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+
+        if(gameEnded)
+        {
+            // Rysowanie ekranu końca gry
+            g.setColor(new Color(200,0,0));
+            g.fillRect(0, 0, getWidth(), getHeight());
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Tahoma", Font.BOLD, 40));
+            FontMetrics fm = g.getFontMetrics();
+            String endGameMessage = "Koniec gry";
+            int x = (getWidth()-fm.stringWidth(endGameMessage))/2;
+            int y = (getHeight()/2)+(fm.getAscent()/2);
+            g.drawString(endGameMessage, x, y);
+        }
+        else
+        {
+            if(bufferImage == null)
+            {
+                bufferImage = createImage(getWidth(), getHeight());
+                bufferGraphics = (Graphics2D)bufferImage.getGraphics();
+            }
+
+            bufferGraphics.clearRect(0, 0, getWidth(), getHeight());
+
+            bufferGraphics.setColor(getBackground());
+            bufferGraphics.fillRect(0, 0, getWidth(), getHeight());
+
+            if(rocket != null)
+            {
+                rocket.draw(bufferGraphics);
+            }
+            for(ItemToCollect coin : coins)
+            {
+                ((Coin)coin).draw(bufferGraphics);
+            }
+            for(ItemToCollect fuel : fuels)
+            {
+                ((Fuel)fuel).draw(bufferGraphics);
+            }
+            for(Asteroid asteroid : asteroids)
+            {
+                asteroid.draw(bufferGraphics);
+            }
+
+            g.drawImage(bufferImage, 0, 0, this);
+        }
+    }
